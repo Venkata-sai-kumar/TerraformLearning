@@ -57,3 +57,15 @@ variable "eks_name" {
   type        = string
   default     = "EzLabsDev-eks"
 }
+
+variable "worker_node_group_name" {
+  description = "The name of the EKS worker node group"
+  type        = string
+  default     = "EzLabsDev-worker-nodes"
+}
+
+variable "spot_node_group_name" {
+  description = "The name of the EKS spot node group"
+  type        = string
+  default     = "EzLabsDev-spot-nodes"
+}

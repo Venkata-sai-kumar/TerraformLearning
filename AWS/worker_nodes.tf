@@ -5,7 +5,6 @@ module "ec2_worker_nodes" {
   node_role_arn    = module.EKS_node_iam_role.arn
   subnet_ids       = [module.private_subnet_2b.id, module.private_subnet_2a.id]
 
-  ami_type = "AL2_x86_64"
   scaling_config = {
     desired_size = 1
     max_size     = 5

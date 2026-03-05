@@ -4,8 +4,6 @@ resource "aws_eks_node_group" "main" {
   node_role_arn   = var.node_role_arn
   subnet_ids      = var.subnet_ids
 
-  ami_type = var.ami_type
-
   scaling_config {
     desired_size = var.scaling_config.desired_size
     max_size     = var.scaling_config.max_size

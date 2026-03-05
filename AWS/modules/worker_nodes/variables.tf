@@ -19,6 +19,12 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
+variable "ami_type" {
+  description = "Type of Amazon Machine Image (AMI) associated with the EKS Node Group."
+  type        = string
+  default     = "AL2_x86_64"
+}
+
 variable "scaling_config" {
   description = "Configuration block for scaling settings of the node group."
   type = object({

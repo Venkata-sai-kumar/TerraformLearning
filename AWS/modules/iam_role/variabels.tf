@@ -4,12 +4,6 @@ variable "iam_role_name" {
   default     = ""
 }
 
-variable "assume_role_services" {
-  description = "AWS service principals allowed to assume this role."
-  type        = list(string)
-  default     = ["ec2.amazonaws.com"]
-}
-
 variable "assume_role_policy_json" {
   description = "Trust policy JSON for assume_role_policy."
   type        = string

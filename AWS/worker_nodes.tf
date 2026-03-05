@@ -4,6 +4,8 @@ module "ec2_worker_nodes" {
   node_group_name  = var.worker_node_group_name
   node_role_arn    = module.EKS_node_iam_role.arn
   subnet_ids       = [module.private_subnet_2b.id, module.private_subnet_2a.id]
+
+  ami_type = "AL2_x86_64"
   scaling_config = {
     desired_size = 1
     max_size     = 5
@@ -14,7 +16,7 @@ module "ec2_worker_nodes" {
     max_unavailable = 1
   }
   capacity_type  = "ON_DEMAND"
-  instance_types = ["t3.medium"]
+  instance_types = ["t3.micro"]
   labels = {
     "environment" = "development"
   }
@@ -39,6 +41,8 @@ module "ec2_spot_nodes" {
   node_group_name  = var.spot_node_group_name
   node_role_arn    = module.EKS_node_iam_role.arn
   subnet_ids       = [module.private_subnet_2b.id, module.private_subnet_2a.id]
+
+  ami_type = "AL2_x86_64"
   scaling_config = {
     desired_size = 1
     max_size     = 5

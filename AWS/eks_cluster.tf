@@ -28,7 +28,7 @@ module "eks_cluster" {
     elastic_load_balancing = {
       enabled = false
     }
-    service_ipv4_cidr = "172.16.0.0/16"
+    service_ipv4_cidr = "172.16.0.0/24"
     ip_family         = "ipv4"
   }
 

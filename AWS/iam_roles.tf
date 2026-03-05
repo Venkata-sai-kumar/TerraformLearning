@@ -2,8 +2,7 @@
 module "EKS_iam_role" {
   source = "./modules/iam_role"
 
-  iam_role_name        = "EKSClusterPolicyRole"
-  assume_role_services = ["eks.amazonaws.com"]
+  iam_role_name = "EKSClusterPolicyRole"
   assume_role_policy_json = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -39,8 +38,7 @@ module "EKS_iam_role_attachment" {
 module "EKS_node_iam_role" {
   source = "./modules/iam_role"
 
-  iam_role_name        = "EKSNodePolicyRole"
-  assume_role_services = ["ec2.amazonaws.com"]
+  iam_role_name = "EKSNodePolicyRole"
   assume_role_policy_json = jsonencode({
     Version = "2012-10-17"
     Statement = [

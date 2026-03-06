@@ -1,0 +1,14 @@
+service:
+  type: LoadBalancer
+  loadBalancerClass: eks.amazonaws.com/nlb
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+    service.beta.kubernetes.io/aws-load-balancer-ip-address-type: "ipv4"
+    # service.beta.kubernetes.io/aws-load-balancer-eip-allocations: "eipalloc-xxx,eipalloc-yyy"
+
+providers:
+  kubernetesIngress:
+    # -- Load Kubernetes Ingress provider
+    enabled: true

@@ -38,9 +38,10 @@ variable "resolve_conflicts_on_update" {
 variable "configuration_values" {
   description = "Custom configuration values for the addon as a single JSON string (must match describe-addon-configuration schema)."
   type        = string
+  default     = null
 
   validation {
-    condition     = can(jsondecode(var.configuration_values))
+    condition     = var.configuration_values == null || can(jsondecode(var.configuration_values))
     error_message = "configuration_values must be valid JSON when provided."
   }
 }
@@ -54,19 +55,35 @@ variable "service_account_role_arn" {
 
   validation {
     condition = (
+      var.service_account_role_arn == "" ||
       can(regex("^arn:aws(-[a-z]+)?:iam::[0-9]{12}:role\\/.+$", var.service_account_role_arn))
     )
-    error_message = "service_account_role_arn must be a valid IAM role ARN."
+    error_message = "service_account_role_arn must be a valid IAM role ARN when provided."
   }
+  default = ""
 }
 
 variable "pod_identity_association" {
   description = "Optional EKS Pod Identity association settings for the add-on. If provided, both role_arn and service_account are required."
 
   type = object({
-    role_arn        = string
-    service_account = string
+    role_arn        = optional(string)
+    service_account = optional(string)
   })
+
+  default = null
+
+  validation {
+    condition = (
+      var.pod_identity_association == null
+      || (
+        length(var.pod_identity_association.role_arn) > 0
+        && length(var.pod_identity_association.service_account) > 0
+        && can(regex("^arn:aws(-[a-z]+)?:iam::[0-9]{12}:role\\/.+$", var.pod_identity_association.role_arn))
+      )
+    )
+    error_message = "If pod_identity_association is set, role_arn must be a valid IAM role ARN and service_account must be non-empty."
+  }
 }
 
 variable "tags" {

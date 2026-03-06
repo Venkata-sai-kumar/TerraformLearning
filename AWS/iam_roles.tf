@@ -23,15 +23,47 @@ module "EKS_iam_role" {
   tags = {
     Name        = "EKSClusterPolicyRole",
     "terraform" = "IaC",
-    "EKS"       = "controlPlane"
+    "EKS"       = "AutoMode"
   }
 }
 
-module "EKS_iam_role_attachment" {
+module "EKS_iam_role_cluster_policy_attachment" {
   source = "./modules/iam_policy_attachment"
 
   name       = "EKSClusterPolicyAttachment"
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  roles      = [module.EKS_iam_role.name]
+}
+
+module "EKS_iam_role_compute_policy_attachment" {
+  source = "./modules/iam_policy_attachment"
+
+  name       = "EKSComputePolicyAttachment"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSComputePolicy"
+  roles      = [module.EKS_iam_role.name]
+}
+
+module "EKS_iam_role_block_storage_policy_attachment" {
+  source = "./modules/iam_policy_attachment"
+
+  name       = "EKSBlockStoragePolicyAttachment"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSBlockStoragePolicy"
+  roles      = [module.EKS_iam_role.name]
+}
+
+module "EKS_iam_role_load_balancing_policy_attachment" {
+  source = "./modules/iam_policy_attachment"
+
+  name       = "EKSLoadBalancingPolicyAttachment"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSLoadBalancingPolicy"
+  roles      = [module.EKS_iam_role.name]
+}
+
+module "EKS_iam_role_networking_policy_attachment" {
+  source = "./modules/iam_policy_attachment"
+
+  name       = "EKSNetworkingPolicyAttachment"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSNetworkingPolicy"
   roles      = [module.EKS_iam_role.name]
 }
 
@@ -66,7 +98,7 @@ module "EKS_node_iam_role_attachment" {
   source = "./modules/iam_policy_attachment"
 
   name       = "EKSNodePolicyAttachment"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodeMinimalPolicy"
   roles      = [module.EKS_node_iam_role.name]
 }
 

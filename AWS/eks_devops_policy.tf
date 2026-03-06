@@ -70,6 +70,7 @@ module "eks_access_devops" {
   tags = {
     Name = "EKSAccessEntryDevOps"
   }
+  depends_on = [module.eks_cluster]
 }
 
 module "iam_policy_to_allow_assume_devops_role" {

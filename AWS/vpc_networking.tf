@@ -1,3 +1,5 @@
+data "aws_availability_zones" "available" {}
+
 
 module "Dev_VPC" {
   source        = "./modules/VPC"
@@ -23,10 +25,10 @@ module "public_subnet_2a" {
   source              = "./modules/subnet"
   vpc_id              = module.Dev_VPC.id
   cidr_block          = var.public_subnet_zone2a_cidr_block
-  availability_zone   = "us-east-2a"
+  availability_zone   = data.aws_availability_zones.available.names[0]
   public_ip_on_launch = true
   tags = {
-    Name                                    = "Ez-dev-public-subnet-2a",
+    Name                                    = "Ez-dev-public-${data.aws_availability_zones.available.names[0]}",
     Environment                             = "Development",
     "kubernetes.io/role/elb"                = "1",
     "kubernetes.io/cluster/${var.eks_name}" = "shared"
@@ -37,10 +39,10 @@ module "public_subnet_2b" {
   source              = "./modules/subnet"
   vpc_id              = module.Dev_VPC.id
   cidr_block          = var.public_subnet_zone2b_cidr_block
-  availability_zone   = "us-east-2b"
+  availability_zone   = data.aws_availability_zones.available.names[1]
   public_ip_on_launch = true
   tags = {
-    Name                                    = "Ez-dev-public-subnet-2b",
+    Name                                    = "Ez-dev-public-${data.aws_availability_zones.available.names[1]}",
     Environment                             = "Development",
     "kubernetes.io/role/elb"                = "1",
     "kubernetes.io/cluster/${var.eks_name}" = "shared"
@@ -51,10 +53,10 @@ module "private_subnet_2a" {
   source              = "./modules/subnet"
   vpc_id              = module.Dev_VPC.id
   cidr_block          = var.private_subnet_zone2a_cidr_block
-  availability_zone   = "us-east-2a"
+  availability_zone   = data.aws_availability_zones.available.names[0]
   public_ip_on_launch = false
   tags = {
-    Name                                    = "Ez-dev-private-subnet-2a",
+    Name                                    = "Ez-dev-private-${data.aws_availability_zones.available.names[0]}",
     Environment                             = "Development",
     "kubernetes.io/role/internal-elb"       = "1",
     "kubernetes.io/cluster/${var.eks_name}" = "owned"
@@ -65,10 +67,10 @@ module "private_subnet_2b" {
   source              = "./modules/subnet"
   vpc_id              = module.Dev_VPC.id
   cidr_block          = var.private_subnet_zone2b_cidr_block
-  availability_zone   = "us-east-2b"
+  availability_zone   = data.aws_availability_zones.available.names[1]
   public_ip_on_launch = false
   tags = {
-    Name                                    = "Ez-dev-private-subnet-2b",
+    Name                                    = "Ez-dev-private-${data.aws_availability_zones.available.names[1]}",
     Environment                             = "Development",
     "kubernetes.io/role/internal-elb"       = "1",
     "kubernetes.io/cluster/${var.eks_name}" = "owned"
@@ -79,10 +81,10 @@ module "isolated_subnet_2a" {
   source              = "./modules/subnet"
   vpc_id              = module.Dev_VPC.id
   cidr_block          = var.isolated_subnet_zone2a_cidr_block
-  availability_zone   = "us-east-2a"
+  availability_zone   = data.aws_availability_zones.available.names[0]
   public_ip_on_launch = false
   tags = {
-    Name        = "Ez-dev-isolated-subnet-2a",
+    Name        = "Ez-dev-isolated-${data.aws_availability_zones.available.names[0]}",
     Environment = "Development"
   }
 }
@@ -91,10 +93,10 @@ module "isolated_subnet_2b" {
   source              = "./modules/subnet"
   vpc_id              = module.Dev_VPC.id
   cidr_block          = var.isolated_subnet_zone2b_cidr_block
-  availability_zone   = "us-east-2b"
+  availability_zone   = data.aws_availability_zones.available.names[1]
   public_ip_on_launch = false
   tags = {
-    Name        = "Ez-dev-isolated-subnet-2b",
+    Name        = "Ez-dev-isolated-${data.aws_availability_zones.available.names[1]}",
     Environment = "Development"
   }
 }
@@ -126,11 +128,11 @@ module "nat_gateway" {
     availability_zone_address = [
       {
         allocation_ids    = [module.elastic_ip_2a.id],
-        availability_zone = "us-east-2a"
+        availability_zone = data.aws_availability_zones.available.names[0]
       },
       {
         allocation_ids    = [module.elastic_ip_2b.id],
-        availability_zone = "us-east-2b"
+        availability_zone = data.aws_availability_zones.available.names[1]
       }
     ]
     tags = {
@@ -138,7 +140,7 @@ module "nat_gateway" {
       Environment = "Development"
     }
   }
-  depends_on = [module.internet_gateway]
+  depends_on = [module.internet_gateway, module.elastic_ip_2a, module.elastic_ip_2b]
 }
 
 module "route_table_public" {
@@ -169,6 +171,7 @@ module "route_table_private" {
     Name        = "Ez-dev-private-route-table",
     Environment = "Development"
   }
+  depends_on = [module.nat_gateway]
 }
 
 module "route_table_association_public_2a" {

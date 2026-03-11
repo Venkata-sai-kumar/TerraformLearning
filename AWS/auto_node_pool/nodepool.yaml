@@ -1,7 +1,7 @@
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
-  name: Ez-Labs-Dev-eks-spot-nodepool
+  name: ez-labs-dev-eks-spot-nodepool
 spec:
   template:
     metadata:

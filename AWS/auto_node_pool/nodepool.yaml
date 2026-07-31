@@ -1,0 +1,33 @@
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: ez-labs-dev-eks-spot-nodepool
+spec:
+  template:
+    metadata:
+      labels:
+        environment: devQA
+    spec:
+      nodeClassRef:
+        group: eks.amazonaws.com
+        kind: NodeClass
+        name: default
+
+      requirements:
+        - key: "eks.amazonaws.com/instance-cpu"
+          operator: In
+          values: ["2", "4", "8", "16", "32"]
+        - key: "topology.kubernetes.io/zone"
+          operator: In
+          values: ["us-east-2a", "us-east-2b"]
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values: ["spot"]
+      taints:
+        - key: eks.amazonaws.com/capacityType
+          value: SPOT
+          effect: NoSchedule
+
+  limits:
+    cpu: "40"
+    memory: "200Gi"
